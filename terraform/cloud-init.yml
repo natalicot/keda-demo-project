@@ -1,0 +1,17 @@
+#cloud-config
+
+packages:
+  - docker.io
+
+# create the docker group
+groups:
+  - docker
+
+# Add default auto created user to docker group
+system_info:
+  default_user:
+    groups: [docker]
+
+runcmd:
+ - /usr/bin/sleep 10
+ - /usr/bin/docker run -d -p 80:15672 -p 5672:5672 --hostname rabbit-manager --name rabbit-manager --restart unless-stopped rabbitmq:3.8-management

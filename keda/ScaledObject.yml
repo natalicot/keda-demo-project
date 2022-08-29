@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keda-rabbitmq-secret
+data:
+  host: YW1xcDovL2d1ZXN0Omd1ZXN0QGVjMi0xOC0xOTctMjQ3LTE3MS5ldS1jZW50cmFsLTEuY29tcHV0ZS5hbWF6b25hd3MuY29tOjU2NzIv # base64 encoded value of format amqp://guest:password@localhost:5672/vhost
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: keda-trigger-auth-rabbitmq-conn
+spec:
+  secretTargetRef:
+    - parameter: host
+      name: keda-rabbitmq-secret
+      key: host
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: rabbitmq-scaledobject
+spec:
+  scaleTargetRef:
+    name: rabbitmq-consumer
+  pollingInterval: 5                               # Optional. Default: 30 seconds
+  cooldownPeriod: 10                              # Optional. Default: 300 seconds
+  idleReplicaCount: 0                                # Optional. Default: ignored, must be less than minReplicaCount
+  minReplicaCount: 1                                # Optional. Default: 0
+  maxReplicaCount: 6
+  triggers:
+  - type: rabbitmq
+    metadata:
+      protocol: amqp
+      queueName: publisher
+      mode: QueueLength
+      value: "2"
+      metricName: custom-testqueue #optional. Generated value would be `rabbitmq-custom-testqueue`
+    authenticationRef:
+      name: keda-trigger-auth-rabbitmq-conn

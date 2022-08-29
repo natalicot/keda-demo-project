@@ -1,0 +1,56 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-consumer
+  labels:
+    app: rabbitmq-consumer
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq-consumer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-consumer
+    spec:
+      containers:
+      - name: rabbitmq-consumer
+        image: natalicot/rmq-consumer:1.1.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: RABBIT_PORT
+          value: "5672"
+        - name: RABBIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq
+              key: RABBIT_USERNAME
+        - name: RABBIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq
+              key: RABBIT_PASSWORD
+        - name: RABBIT_HOST
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq
+              key: RABBIT_HOST
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-consumer
+  labels:
+    app: rabbitmq-consumer
+spec:
+  selector:
+    app: rabbitmq-consumer
+  ports:
+    - protocol: TCP
+      name: http
+      port: 80
+      targetPort: 80
