@@ -123,17 +123,17 @@ All technologies used in this Project
 
 * Apply RMQ secrets
   ```sh 
-  k apply -f applications/rmq_secret.yml
+  kubectl apply -f applications/rmq_secret.yml
   ```
 
 * Install Publisher
   ```sh 
-  k apply -f applications/publisher/deployment.yml
+  kubectl apply -f applications/publisher/deployment.yml
   ```
 
 * Port forward Publisher Service
   ```sh 
-  k port-forward svc/rabbitmq-publisher 8080:80
+  kubectl port-forward svc/rabbitmq-publisher 8080:80
   ```
 
 * Send Q
@@ -143,7 +143,7 @@ All technologies used in this Project
 
 * Install Consumer
   ```sh 
-  k apply -f applications/consumer/deployment.yml
+  kubectl apply -f applications/consumer/deployment.yml
   ```
 
 * Install Keda helm repo add kedacore https://kedacore.github.io/charts
@@ -153,7 +153,7 @@ All technologies used in this Project
 
 * Apply scale object
   ```sh  
-  k apply -f keda/ScaledObject.yml
+  kubectl apply -f keda/ScaledObject.yml
   ```
 
 * Loop requests
