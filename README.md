@@ -147,13 +147,17 @@ All technologies used in this Project
   ```
 
 * Install Keda helm repo add kedacore https://kedacore.github.io/charts
-  ```sh   
-  helm repo update kubectl create namespace keda helm install keda kedacore/keda --namespace keda
+  ```sh
+  helm repo add kedacore https://kedacore.github.io/charts   
+  helm repo update 
+  kubectl create namespace keda 
+  helm install keda kedacore/keda --namespace keda
   ```
 
 * Apply scale object
   ```sh  
   kubectl apply -f keda/ScaledObject.yml
+  kubectl get scaledobject.keda.sh -n apps
   ```
 
 * Loop requests
