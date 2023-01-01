@@ -1,6 +1,5 @@
 provider "aws" {
   region  = var.region
-  profile = "natali-aws-testing"
 }
 
 module "aws_key_pair" {

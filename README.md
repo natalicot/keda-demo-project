@@ -112,18 +112,16 @@ All technologies used in this Project
 
 * Get RMQ IP and visit the RMQ console. psw and username: guest
   ```sh 
-  terraform output public_dns
+  export PUBLIC_DNS=$(terraform output public_dns)
   ```
-
-* Get RMQ connection string base64 encoded
+  
+* Create RMQ secrets
   ```sh 
-  echo -n "<public_dns>" | base64 
-  echo -n 'amqp://guest:guest@<public_dns>:5672/' | base64
-  ```
-
-* Apply RMQ secrets
-  ```sh 
-  kubectl apply -f applications/rmq_secret.yml
+  kubectl create secret generic rabbitmq \
+    --from-literal=RABBIT_USERNAME=<supersecret> \
+    --from-literal=RABBIT_PASSWORD=<topsecret> \
+    --from-literal=RABBIT_HOST=$PUBLIC_DNS \
+    --from-literal=RABBIT_CONECTION_STRING=amqp:<supersecret>:<topsecret>@$PUBLIC_DNS:5672/vhost 
   ```
 
 * Install Publisher
